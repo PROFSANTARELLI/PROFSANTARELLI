@@ -1,0 +1,53 @@
+Análise de Dados com Python
+Python é uma das linguagens mais populares para análise de dados devido à sua simplicidade e poderosas bibliotecas. Nesta aula, vamos explorar como usar Python para calcular medidas estatísticas fundamentais como média, moda, mediana e desvio padrão.
+
+1. Introdução ao Python para Análise de Dados
+Por que Python? Python é amplamente utilizado em Data Science por suas bibliotecas como NumPy, Pandas, e SciPy, que facilitam a manipulação e análise de grandes volumes de dados.
+Configuração do Ambiente: Explicação sobre a instalação de Python e pacotes relevantes como NumPy e Pandas.
+2. Média
+Definição: A média é o valor central que resume um conjunto de dados dividindo a soma de todos os valores pelo número total de observações.
+Uso em Python: A média pode ser calculada facilmente utilizando a biblioteca NumPy.
+Exemplo de Código:
+python
+Copiar código
+import numpy as np
+
+# Criação de um array de dados
+dados = [10, 20, 30, 40, 50]
+
+# Cálculo da média
+media = np.mean(dados)
+print("Média:", media)
+Explicação: Este código cria uma lista de dados e utiliza a função mean() do NumPy para calcular a média.
+3. Mediana
+Definição: A mediana é o valor que separa a metade superior da metade inferior de um conjunto de dados quando ordenados.
+Uso em Python: A mediana também pode ser calculada com a função median() do NumPy.
+Exemplo de Código:
+python
+Copiar código
+# Cálculo da mediana
+mediana = np.median(dados)
+print("Mediana:", mediana)
+Explicação: Aqui, a função median() retorna o valor central da lista ordenada.
+4. Moda
+Definição: A moda é o valor que aparece com mais frequência em um conjunto de dados.
+Uso em Python: Para calcular a moda, utilizamos a função mode() da biblioteca SciPy.
+Exemplo de Código:
+python
+Copiar código
+from scipy import stats
+
+# Cálculo da moda
+moda = stats.mode(dados)
+print("Moda:", moda.mode[0])
+Explicação: A função mode() retorna o valor mais frequente e sua frequência. Neste exemplo, moda.mode[0] é usado para acessar o valor da moda.
+5. Desvio Padrão
+Definição: O desvio padrão é uma medida de dispersão que indica o quanto os valores de um conjunto de dados diferem da média.
+Uso em Python: O desvio padrão pode ser calculado com a função std() do NumPy.
+Exemplo de Código:
+python
+Copiar código
+# Cálculo do desvio padrão
+desvio_padrao = np.std(dados)
+print("Desvio Padrão:", desvio_padrao)
+Explicação: Este código calcula o desvio padrão dos dados utilizando std().
