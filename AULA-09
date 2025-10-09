@@ -1,4 +1,6 @@
-ATIVIDADE AC 09/01/2025
+ATIVIDADE 09/01/2025
+
+MISSÃO AC
 
 Projeto 1: Classificação de Risco de Crédito (0,10 PONTO)
 Cenário de Negócio: Você foi contratado por uma fintech para desenvolver um sistema automatizado de análise de crédito. O objetivo é minimizar o risco de perdas financeiras, identificando clientes com alta probabilidade de não pagarem um empréstimo.
@@ -33,14 +35,13 @@ Avaliação: Use .predict() e .predict_proba() nos dados de teste. Calcule a acu
 
 Projeto 2: Previsão de Consumo de Energia (0,10 PONTO)
 Cenário de Negócio:
-Você é um cientista de dados em uma companhia de energia. Para otimizar a distribuição e evitar desperdícios, a empresa precisa prever o consumo diário de energia de grandes edifícios. Sua tarefa é criar um modelo que estime o consumo em kWh com base em dados de calendário e clima.
+Você é um cientista de dados em uma companhia de energia. Para otimizar a distribuição e evitar desperdícios, a empresa precisa prever o consumo diário de energia de grandes edifícios.
+Sua tarefa é criar um modelo que estime o consumo em kWh com base em dados de calendário e clima.
 
-Seu Objetivo:
-Construir um modelo de regressão que preveja um valor numérico de consumo de energia.
+Seu Objetivo:Construir um modelo de regressão que preveja um valor numérico de consumo de energia.
+
 Dicas para a Construção:
-Dataset:
-Crie um DataFrame com o Pandas.
-
+Dataset: Crie um DataFrame com o Pandas.
 Features Iniciais: data (use pd.to_datetime para criar uma série de datas), temperatura_media (ex: 0 a 35), dia_util (use 1 para sim e 0 para não).
 Alvo (Target): consumo_energia_kwh (um valor numérico, ex: 1000 a 5000).
 Bibliotecas Essenciais:
@@ -59,57 +60,7 @@ Avaliação: Faça previsões nos dados de teste e avalie seu modelo usando o Er
 
 
 
-Projeto 3: Classificação de Espécies de Flores Íris (0,10 PONTO)
-Cenário de Negócio:
-Você é um pesquisador botânico e coletou dados sobre as dimensões das pétalas e sépalas de várias flores do gênero Íris. Para acelerar futuras pesquisas, você quer um programa que identifique automaticamente a espécie de uma flor (setosa, versicolor ou virginica) a partir dessas medidas.
-Seu Objetivo:
-Construir um modelo de classificação multiclasse simples e eficiente.
-Dicas para a Construção:
-Dataset:
-Não precisa criar do zero! O Scikit-learn já vem com este dataset clássico.
-Use from sklearn.datasets import load_iris. A função load_iris() retorna um objeto onde iris.data são as features e iris.target são as classes.
-Bibliotecas Essenciais:
-load_iris do sklearn.datasets.
-train_test_split.
-Pipeline.
-StandardScaler.
-KNeighborsClassifier do sklearn.neighbors (um algoritmo clássico baseado em "proximidade").
-accuracy_score, classification_report.
-Estrutura do Projeto:
-Preparação: Carregue os dados e imediatamente os divida em conjuntos de treino e teste.
-Modelagem: O algoritmo KNN é muito sensível à escala das features. Portanto, crie um Pipeline que primeiro aplica o StandardScaler e depois o KNeighborsClassifier. Você pode experimentar com o parâmetro n_neighbors (um bom começo é 5).
-Treinamento: Treine o pipeline com .fit().
-Avaliação: Faça previsões e use o classification_report para ver a performance do modelo para cada uma das três espécies de flores. A acurácia geral é uma boa métrica aqui, pois o dataset é balanceado.
-
-
-
-Projeto 4: Previsão de Qualidade de Vinho (0,10 PONTO)
-Cenário de Negócio:
-Você é um enólogo em uma grande vinícola e quer usar dados para aprimorar o processo de produção. Você tem acesso a um grande dataset com as análises físico-químicas de vinhos e uma nota de qualidade (de 0 a 10) atribuída por especialistas. Sua tarefa é criar um modelo que preveja essa nota de qualidade.
-Seu Objetivo:
-Construir um modelo de regressão para prever a nota de um vinho com base em suas características.
-Dicas para a Construção:
-Dataset:
-Este é um dataset público famoso. Você pode carregá-lo diretamente com o Pandas.
-URL: 'http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv'
-Importante: Os dados neste CSV são separados por ponto e vírgula. Use o parâmetro sep=';' no pd.read_csv( ).
-O alvo é a coluna quality. Todas as outras são features.
-Bibliotecas Essenciais:
-pandas.
-train_test_split.
-Pipeline.
-StandardScaler.
-SVR do sklearn.svm (Support Vector Regressor, um algoritmo poderoso).
-mean_absolute_error, r2_score.
-Estrutura do Projeto:
-Preparação: Carregue o dataset, separe X e y, e divida em treino e teste.
-Modelagem: O SVR, assim como o KNN, é muito sensível à escala dos dados. É essencial usar um StandardScaler. Crie um Pipeline contendo o StandardScaler e o SVR.
-Treinamento: Treine o pipeline. Dependendo do tamanho dos dados, o SVR pode levar um pouco mais de tempo para treinar do que a Regressão Linear.
-Avaliação: Faça previsões e avalie com MAE e R² Score. Reflita: um erro médio de 0.5 na nota de um vinho é aceitável para o seu negócio?
-
-
-
-Projeto 5: Detecção de E-mails Spam (0,10 PONTO)
+Projeto 3: Detecção de E-mails Spam (0,10 PONTO)
 Cenário de Negócio:
 Você está desenvolvendo um novo cliente de e-mail e quer oferecer um filtro de spam inteligente. Você tem um dataset de e-mails, onde cada um está rotulado como "spam" ou "ham" (não spam). O desafio é que os dados são texto puro.
 Seu Objetivo:
@@ -133,5 +84,64 @@ TfidfVectorizer: Esta etapa transforma as frases em um vetor numérico baseado n
 MultinomialNB: O classificador que aprenderá com esses vetores.
 Crie um Pipeline com essas duas etapas.
 Treinamento: Treine o pipeline. O .fit() irá aplicar o vetorizador e depois treinar o classificador.
-Avaliação: Faça previsões. Analise o classification_report. Para um filtro de spam, qual é mais importante: alta precisão ou alto recall na classe 'spam'? (Pense no custo de um e-mail importante ser classificado como spam vs. um spam passar pelo filtro).
+Avaliação: Faça previsões. Analise o classification_report. Para um filtro de spam, qual é mais importante: alta precisão ou alto recall na classe 'spam'? 
+(Pense no custo de um e-mail importante ser classificado como spam vs. um spam passar pelo filtro).
+
+
+
+ETAPA DE SUPER DESAFIO: VALOR DE 0,30 DE BÔNUS NA AVALIAÇÃO SEMESTRAL
+
+Projeto 4: Classificação de Espécies de Flores Íris (0,15 PONTO)
+Cenário de Negócio:
+Você é um pesquisador botânico e coletou dados sobre as dimensões das pétalas e sépalas de várias flores do gênero Íris. Para acelerar futuras pesquisas, você quer um programa que identifique automaticamente a espécie de uma flor (setosa, versicolor ou virginica) a partir dessas medidas.
+Seu Objetivo:
+Construir um modelo de classificação multiclasse simples e eficiente.
+Dicas para a Construção:
+Dataset:
+Não precisa criar do zero! O Scikit-learn já vem com este dataset clássico.
+Use from sklearn.datasets import load_iris. A função load_iris() retorna um objeto onde iris.data são as features e iris.target são as classes.
+Bibliotecas Essenciais:
+load_iris do sklearn.datasets.
+train_test_split.
+Pipeline.
+StandardScaler.
+KNeighborsClassifier do sklearn.neighbors (um algoritmo clássico baseado em "proximidade").
+accuracy_score, classification_report.
+Estrutura do Projeto:
+Preparação: Carregue os dados e imediatamente os divida em conjuntos de treino e teste.
+Modelagem: O algoritmo KNN é muito sensível à escala das features. Portanto, crie um Pipeline que primeiro aplica o StandardScaler e depois o KNeighborsClassifier. Você pode experimentar com o parâmetro n_neighbors (um bom começo é 5).
+Treinamento: Treine o pipeline com .fit().
+Avaliação: Faça previsões e use o classification_report para ver a performance do modelo para cada uma das três espécies de flores. A acurácia geral é uma boa métrica aqui, pois o dataset é balanceado.
+
+
+Projeto 5: Previsão de Qualidade de Vinho (0,15 PONTO)
+Cenário de Negócio:
+Você é um enólogo em uma grande vinícola e quer usar dados para aprimorar o processo de produção. Você tem acesso a um grande dataset com as análises físico-químicas de vinhos e uma nota de qualidade (de 0 a 10) atribuída por especialistas.
+Sua tarefa é criar um modelo que preveja essa nota de qualidade.
+
+Seu Objetivo:
+Construir um modelo de regressão para prever a nota de um vinho com base em suas características.
+Dicas para a Construção:
+
+Dataset:
+Este é um dataset público famoso. Você pode carregá-lo diretamente com o Pandas.
+URL: 'http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv'
+Importante: Os dados neste CSV são separados por ponto e vírgula. Use o parâmetro sep=';' no pd.read_csv( ).
+O alvo é a coluna quality. Todas as outras são features.
+Bibliotecas Essenciais:
+pandas.
+train_test_split.
+Pipeline.
+StandardScaler.
+SVR do sklearn.svm (Support Vector Regressor, um algoritmo poderoso).
+mean_absolute_error, r2_score.
+Estrutura do Projeto:
+Preparação: Carregue o dataset, separe X e y, e divida em treino e teste.
+Modelagem: O SVR, assim como o KNN, é muito sensível à escala dos dados. É essencial usar um StandardScaler. Crie um Pipeline contendo o StandardScaler e o SVR.
+Treinamento: Treine o pipeline. Dependendo do tamanho dos dados, o SVR pode levar um pouco mais de tempo para treinar do que a Regressão Linear.
+Avaliação: Faça previsões e avalie com MAE e R² Score. Reflita: um erro médio de 0.5 na nota de um vinho é aceitável para o seu negócio?
+
+
+
+
 
