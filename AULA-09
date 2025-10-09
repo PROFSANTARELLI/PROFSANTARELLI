@@ -1,0 +1,137 @@
+ATIVIDADE AC 09/01/2025
+
+Projeto 1: Classificação de Risco de Crédito (0,10 PONTO)
+Cenário de Negócio: Você foi contratado por uma fintech para desenvolver um sistema automatizado de análise de crédito. O objetivo é minimizar o risco de perdas financeiras, identificando clientes com alta probabilidade de não pagarem um empréstimo.
+Sua tarefa é construir um modelo de Machine Learning que classifique os pedidos de empréstimo em "Baixo Risco" ou "Alto Risco".
+
+Seu Objetivo: Construir um pipeline de classificação que receba os dados de um cliente e preveja sua categoria de risco.
+
+Dicas para a Construção:
+Dataset:
+Crie um DataFrame com o Pandas.
+Features Numéricas: idade (ex: 25 a 65), salario_anual (ex: 30000 a 200000), anos_empregado (ex: 0 a 30), valor_emprestimo (ex: 5000 a 100000).
+Features Categóricas: tipo_moradia (com valores como 'Aluguel', 'Propria', 'Financiada').
+Alvo (Target): risco_inadimplencia (use 0 para Baixo Risco e 1 para Alto Risco).
+Desafio Extra: Use np.nan para introduzir alguns valores ausentes na coluna salario_anual para simular dados do mundo real.
+
+Bibliotecas Essenciais:
+pandas e numpy para manipulação de dados.
+train_test_split do sklearn.model_selection.
+Pipeline do sklearn.pipeline.
+SimpleImputer, StandardScaler, OneHotEncoder do sklearn.preprocessing.
+ColumnTransformer do sklearn.compose.
+LogisticRegression do sklearn.linear_model (um bom ponto de partida para classificação).
+accuracy_score, classification_report, roc_auc_score do sklearn.metrics.
+
+Estrutura do Projeto:
+Preparação: Separe seus dados em X (features) e y (alvo). Use train_test_split para criar os conjuntos de treino e teste (sugestão: 30% para teste).
+Pré-processamento: Defina um ColumnTransformer. Dentro dele, crie um pipeline para as colunas numéricas (com SimpleImputer e StandardScaler) e outro para as colunas categóricas (com OneHotEncoder).
+Modelagem: Crie um Pipeline final que una o ColumnTransformer e o modelo LogisticRegression.
+Treinamento: Use o método .fit() no seu pipeline final com os dados de treino.
+Avaliação: Use .predict() e .predict_proba() nos dados de teste. Calcule a acurácia, o classification_report e o roc_auc_score para entender a performance do seu modelo.
+
+
+Projeto 2: Previsão de Consumo de Energia (0,10 PONTO)
+Cenário de Negócio:
+Você é um cientista de dados em uma companhia de energia. Para otimizar a distribuição e evitar desperdícios, a empresa precisa prever o consumo diário de energia de grandes edifícios. Sua tarefa é criar um modelo que estime o consumo em kWh com base em dados de calendário e clima.
+
+Seu Objetivo:
+Construir um modelo de regressão que preveja um valor numérico de consumo de energia.
+Dicas para a Construção:
+Dataset:
+Crie um DataFrame com o Pandas.
+
+Features Iniciais: data (use pd.to_datetime para criar uma série de datas), temperatura_media (ex: 0 a 35), dia_util (use 1 para sim e 0 para não).
+Alvo (Target): consumo_energia_kwh (um valor numérico, ex: 1000 a 5000).
+Bibliotecas Essenciais:
+pandas e numpy.
+train_test_split.
+Pipeline.
+StandardScaler.
+RandomForestRegressor do sklearn.ensemble (um modelo robusto para esse tipo de problema).
+mean_absolute_error, r2_score do sklearn.metrics.
+Estrutura do Projeto:
+Engenharia de Atributos (Feature Engineering): Esta é a etapa chave! A partir da coluna data, crie novas features numéricas: mes, dia_da_semana, dia_do_ano. Use os acessadores .dt do Pandas (ex: df['data'].dt.month). Após criar essas novas colunas, remova a coluna data original.
+Preparação: Com as novas features criadas, separe X e y. Divida em treino e teste.
+Modelagem: Como todas as suas features agora são numéricas, seu pipeline pode ser mais simples. Crie um Pipeline que contenha um StandardScaler e o RandomForestRegressor.
+Treinamento: Treine o pipeline com os dados de treino.
+Avaliação: Faça previsões nos dados de teste e avalie seu modelo usando o Erro Absoluto Médio (MAE) e o R² Score. Interprete o que o MAE significa no contexto do problema (kWh).
+
+
+
+Projeto 3: Classificação de Espécies de Flores Íris (0,10 PONTO)
+Cenário de Negócio:
+Você é um pesquisador botânico e coletou dados sobre as dimensões das pétalas e sépalas de várias flores do gênero Íris. Para acelerar futuras pesquisas, você quer um programa que identifique automaticamente a espécie de uma flor (setosa, versicolor ou virginica) a partir dessas medidas.
+Seu Objetivo:
+Construir um modelo de classificação multiclasse simples e eficiente.
+Dicas para a Construção:
+Dataset:
+Não precisa criar do zero! O Scikit-learn já vem com este dataset clássico.
+Use from sklearn.datasets import load_iris. A função load_iris() retorna um objeto onde iris.data são as features e iris.target são as classes.
+Bibliotecas Essenciais:
+load_iris do sklearn.datasets.
+train_test_split.
+Pipeline.
+StandardScaler.
+KNeighborsClassifier do sklearn.neighbors (um algoritmo clássico baseado em "proximidade").
+accuracy_score, classification_report.
+Estrutura do Projeto:
+Preparação: Carregue os dados e imediatamente os divida em conjuntos de treino e teste.
+Modelagem: O algoritmo KNN é muito sensível à escala das features. Portanto, crie um Pipeline que primeiro aplica o StandardScaler e depois o KNeighborsClassifier. Você pode experimentar com o parâmetro n_neighbors (um bom começo é 5).
+Treinamento: Treine o pipeline com .fit().
+Avaliação: Faça previsões e use o classification_report para ver a performance do modelo para cada uma das três espécies de flores. A acurácia geral é uma boa métrica aqui, pois o dataset é balanceado.
+
+
+
+Projeto 4: Previsão de Qualidade de Vinho (0,10 PONTO)
+Cenário de Negócio:
+Você é um enólogo em uma grande vinícola e quer usar dados para aprimorar o processo de produção. Você tem acesso a um grande dataset com as análises físico-químicas de vinhos e uma nota de qualidade (de 0 a 10) atribuída por especialistas. Sua tarefa é criar um modelo que preveja essa nota de qualidade.
+Seu Objetivo:
+Construir um modelo de regressão para prever a nota de um vinho com base em suas características.
+Dicas para a Construção:
+Dataset:
+Este é um dataset público famoso. Você pode carregá-lo diretamente com o Pandas.
+URL: 'http://archive.ics.uci.edu/ml/machine-learning-databases/wine-quality/winequality-white.csv'
+Importante: Os dados neste CSV são separados por ponto e vírgula. Use o parâmetro sep=';' no pd.read_csv( ).
+O alvo é a coluna quality. Todas as outras são features.
+Bibliotecas Essenciais:
+pandas.
+train_test_split.
+Pipeline.
+StandardScaler.
+SVR do sklearn.svm (Support Vector Regressor, um algoritmo poderoso).
+mean_absolute_error, r2_score.
+Estrutura do Projeto:
+Preparação: Carregue o dataset, separe X e y, e divida em treino e teste.
+Modelagem: O SVR, assim como o KNN, é muito sensível à escala dos dados. É essencial usar um StandardScaler. Crie um Pipeline contendo o StandardScaler e o SVR.
+Treinamento: Treine o pipeline. Dependendo do tamanho dos dados, o SVR pode levar um pouco mais de tempo para treinar do que a Regressão Linear.
+Avaliação: Faça previsões e avalie com MAE e R² Score. Reflita: um erro médio de 0.5 na nota de um vinho é aceitável para o seu negócio?
+
+
+
+Projeto 5: Detecção de E-mails Spam (0,10 PONTO)
+Cenário de Negócio:
+Você está desenvolvendo um novo cliente de e-mail e quer oferecer um filtro de spam inteligente. Você tem um dataset de e-mails, onde cada um está rotulado como "spam" ou "ham" (não spam). O desafio é que os dados são texto puro.
+Seu Objetivo:
+Construir um pipeline de NLP (Processamento de Linguagem Natural) para classificar e-mails.
+Dicas para a Construção:
+Dataset:
+Crie um pequeno DataFrame com duas colunas: texto e categoria.
+Exemplos de texto: "oferta imperdível clique aqui agora", "ganhe dinheiro fácil", "relatório de vendas anexo", "oi, tudo bem? reunião amanhã".
+categoria: 'spam' ou 'ham'.
+Bibliotecas Essenciais:
+pandas.
+train_test_split.
+Pipeline.
+TfidfVectorizer do sklearn.feature_extraction.text. Esta é a ferramenta chave que converterá o texto em números que o modelo entende.
+MultinomialNB do sklearn.naive_bayes. Um algoritmo de classificação clássico e muito eficaz para problemas de texto.
+accuracy_score, classification_report.
+Estrutura do Projeto:
+Preparação: Crie o dataset, separe X (a coluna texto) e y (a coluna categoria), e divida em treino e teste.
+Modelagem de NLP: Este pipeline é diferente. Ele não usará StandardScaler. As etapas serão:
+TfidfVectorizer: Esta etapa transforma as frases em um vetor numérico baseado na frequência e relevância das palavras.
+MultinomialNB: O classificador que aprenderá com esses vetores.
+Crie um Pipeline com essas duas etapas.
+Treinamento: Treine o pipeline. O .fit() irá aplicar o vetorizador e depois treinar o classificador.
+Avaliação: Faça previsões. Analise o classification_report. Para um filtro de spam, qual é mais importante: alta precisão ou alto recall na classe 'spam'? (Pense no custo de um e-mail importante ser classificado como spam vs. um spam passar pelo filtro).
+
