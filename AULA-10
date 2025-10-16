@@ -1,0 +1,423 @@
+A MISSÃO DESTA AULA DE VALOR TOTAL DE 0,50pts, COM AS SEGUINTES ATIVIDADES:
+
+ETAPA 1: DESCREVER O QUE É REDES NEURAIS E DEEP LEARNING E DAR UM EXEMPLO (0,10pts)
+
+ETAPA 2: DESENVOLVER EXERCICIOS DE DEEP LEARNING (0,40pts)
+Exercício 1: Classificação de Imagens com MLP (0,10)
+Objetivo: Construir e treinar uma Rede Neural Perceptron Multicamadas (MLP) para classificar imagens do dataset Fashion MNIST.
+
+Passos:
+1. Carregar e Pré-processar os Dados: Carregue o dataset Fashion MNIST (disponível no Keras ou TensorFlow Datasets). Normalize os valores dos pixels para o intervalo [0, 1] e "achate" (flatten) as imagens para um vetor unidimensional.
+
+2. Construir a MLP: Crie um modelo sequencial com Keras. Adicione uma camada de entrada, algumas camadas densas (Dense) com função de ativação ReLU e uma camada de saída com função de ativação softmax (para classificação multiclasse).
+
+3. Compilar o Modelo: Configure o modelo com um otimizador (ex: adam), função de perda (ex: sparse_categorical_crossentropy) e métricas (ex: accuracy).
+
+4. Treinar o Modelo: Treine o modelo com os dados de treinamento e valide-o com os dados de teste. Monitore a acurácia e a perda.
+
+5. Avaliar e Visualizar: Avalie o modelo no conjunto de teste final e visualize algumas previsões para entender onde o modelo acerta e erra.
+
+
+Passo 1: Carregar e Pré-processar os Dados
+import tensorflow as tf
+from tensorflow import keras
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Carregar o dataset Fashion MNIST
+(x_train, y_train), (x_test, y_test) = keras.datasets.fashion_mnist.load_data()
+
+# Verificar a forma dos dados
+print(f"Forma dos dados de treinamento: {x_train.shape}")
+print(f"Forma dos rótulos de treinamento: {y_train.shape}")
+print(f"Forma dos dados de teste: {x_test.shape}")
+print(f"Forma dos rótulos de teste: {y_test.shape}")
+
+# Normalizar os valores dos pixels para [0, 1]
+x_train = x_train.astype('float32') / 255.0
+x_test = x_test.astype('float32') / 255.0
+
+# Achatar as imagens (28x28 -> 784)
+x_train_flat = x_train.reshape(x_train.shape[0], -1)
+x_test_flat = x_test.reshape(x_test.shape[0], -1)
+
+print(f"Forma após flatten: {x_train_flat.shape}")
+
+
+Passo 2: Construir a MLP
+# Definir os nomes das classes para visualização
+class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+
+# Construir o modelo MLP
+model = keras.Sequential([
+    # Camada de entrada (flatten já foi feito manualmente)
+    keras.layers.Dense(128, activation='relu', input_shape=(784,)),
+    
+    # Camadas ocultas
+    keras.layers.Dense(64, activation='relu'),
+    keras.layers.Dense(32, activation='relu'),
+    
+    # Camada de saída (10 classes)
+    keras.layers.Dense(10, activation='softmax')
+])
+
+# Visualizar a arquitetura do modelo
+model.summary()
+
+
+Passo 3: Compilar o Modelo
+# Compilar o modelo
+model.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+
+Passo 4: Treinar o Modelo
+# Definir callbacks para monitoramento
+early_stopping = keras.callbacks.EarlyStopping(
+    monitor='val_loss',
+    patience=5,
+    restore_best_weights=True
+)
+
+# Treinar o modelo
+history = model.fit(
+    x_train_flat, y_train,
+    batch_size=32,
+    epochs=50,
+    validation_data=(x_test_flat, y_test),
+    callbacks=[early_stopping],
+    verbose=1
+)
+
+
+Passo 5: Avaliar e Visualizar
+# Avaliar o modelo no conjunto de teste
+test_loss, test_accuracy = model.evaluate(x_test_flat, y_test, verbose=0)
+print(f"\nAcurácia no conjunto de teste: {test_accuracy:.4f}")
+print(f"Perda no conjunto de teste: {test_loss:.4f}")
+
+# Plotar histórico de treinamento
+plt.figure(figsize=(12, 4))
+
+# Gráfico de acurácia
+plt.subplot(1, 2, 1)
+plt.plot(history.history['accuracy'], label='Treinamento')
+plt.plot(history.history['val_accuracy'], label='Validação')
+plt.title('Acurácia do Modelo')
+plt.xlabel('Época')
+plt.ylabel('Acurácia')
+plt.legend()
+
+# Gráfico de perda
+plt.subplot(1, 2, 2)
+plt.plot(history.history['loss'], label='Treinamento')
+plt.plot(history.history['val_loss'], label='Validação')
+plt.title('Perda do Modelo')
+plt.xlabel('Época')
+plt.ylabel('Perda')
+plt.legend()
+
+plt.tight_layout()
+plt.show()
+
+# Fazer previsões no conjunto de teste
+predictions = model.predict(x_test_flat)
+predicted_classes = np.argmax(predictions, axis=1)
+
+# Visualizar algumas previsões
+def plot_predictions(images, true_labels, predicted_labels, class_names, num_images=10):
+    plt.figure(figsize=(12, 8))
+    for i in range(num_images):
+        plt.subplot(2, 5, i + 1)
+        plt.imshow(images[i], cmap='gray')
+        
+        # Cor do texto: verde se correto, vermelho se errado
+        color = 'green' if true_labels[i] == predicted_labels[i] else 'red'
+        
+        plt.title(f'Verd: {class_names[true_labels[i]]}\nPred: {class_names[predicted_labels[i]]}', 
+                 color=color, fontsize=10)
+        plt.axis('off')
+    plt.tight_layout()
+    plt.show()
+
+# Visualizar as primeiras 10 imagens do teste
+plot_predictions(x_test, y_test, predicted_classes, class_names)
+
+# Matriz de confusão
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
+
+# Calcular matriz de confusão
+cm = confusion_matrix(y_test, predicted_classes)
+
+# Plotar matriz de confusão
+plt.figure(figsize=(10, 8))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+            xticklabels=class_names, yticklabels=class_names)
+plt.title('Matriz de Confusão')
+plt.xlabel('Predito')
+plt.ylabel('Verdadeiro')
+plt.xticks(rotation=45)
+plt.yticks(rotation=0)
+plt.show()
+
+# Relatório de classificação
+print("\nRelatório de Classificação:")
+print(classification_report(y_test, predicted_classes, target_names=class_names))
+
+# Analisar exemplos específicos
+def analyze_predictions(true_labels, predicted_labels, probabilities, class_names, num_examples=5):
+    # Encontrar exemplos corretos e incorretos
+    correct_indices = np.where(true_labels == predicted_labels)[0]
+    incorrect_indices = np.where(true_labels != predicted_labels)[0]
+    
+    print(f"\nExemplos de acertos:")
+    for i in range(min(3, len(correct_indices))):
+        idx = correct_indices[i]
+        print(f"Imagem {idx}: {class_names[true_labels[idx]]} - "
+              f"Confiança: {probabilities[idx][predicted_labels[idx]]:.4f}")
+    
+    print(f"\nExemplos de erros:")
+    for i in range(min(3, len(incorrect_indices))):
+        idx = incorrect_indices[i]
+        print(f"Imagem {idx}: Verdadeiro: {class_names[true_labels[idx]]} - "
+              f"Predito: {class_names[predicted_labels[idx]]} - "
+              f"Confiança: {probabilities[idx][predicted_labels[idx]]:.4f}")
+
+analyze_predictions(y_test, predicted_classes, predictions, class_names)
+
+
+
+
+
+Exercício 2: Reconhecimento de Dígitos com CNN (0,10pts)
+
+Passo 1: Carregar e Pré-processar os Dados
+
+import tensorflow as tf
+from tensorflow import keras
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import confusion_matrix, classification_report
+import seaborn as sns
+
+# Carregar o dataset MNIST
+(x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
+
+# Verificar a forma dos dados
+print(f"Forma dos dados de treinamento: {x_train.shape}")
+print(f"Forma dos rótulos de treinamento: {y_train.shape}")
+print(f"Forma dos dados de teste: {x_test.shape}")
+print(f"Forma dos rótulos de teste: {y_test.shape}")
+
+# Normalizar os valores dos pixels para [0, 1]
+x_train = x_train.astype('float32') / 255.0
+x_test = x_test.astype('float32') / 255.0
+
+# Redimensionar para o formato esperado pelas camadas convolucionais (28, 28, 1)
+x_train_cnn = x_train.reshape(x_train.shape[0], 28, 28, 1)
+x_test_cnn = x_test.reshape(x_test.shape[0], 28, 28, 1)
+
+print(f"Forma após redimensionamento - Treino: {x_train_cnn.shape}")
+print(f"Forma após redimensionamento - Teste: {x_test_cnn.shape}")
+
+# Visualizar algumas imagens do dataset
+def plot_sample_images(images, labels, num_images=10):
+    plt.figure(figsize=(12, 6))
+    for i in range(num_images):
+        plt.subplot(2, 5, i + 1)
+        plt.imshow(images[i].squeeze(), cmap='gray')
+        plt.title(f'Label: {labels[i]}')
+        plt.axis('off')
+    plt.tight_layout()
+    plt.show()
+
+plot_sample_images(x_train_cnn, y_train)
+
+Passo 2: Construir a CNN
+# Construir o modelo CNN
+model_cnn = keras.Sequential([
+    # Primeira camada convolucional
+    keras.layers.Conv2D(32, (3, 3), activation='relu', input_shape=(28, 28, 1)),
+    keras.layers.MaxPooling2D((2, 2)),
+    
+    # Segunda camada convolucional
+    keras.layers.Conv2D(64, (3, 3), activation='relu'),
+    keras.layers.MaxPooling2D((2, 2)),
+    
+    # Terceira camada convolucional
+    keras.layers.Conv2D(64, (3, 3), activation='relu'),
+    
+    # Achatar a saída para camadas densas
+    keras.layers.Flatten(),
+    
+    # Camadas densas
+    keras.layers.Dense(64, activation='relu'),
+    keras.layers.Dropout(0.5),  # Regularização para evitar overfitting
+    
+    # Camada de saída (10 classes - dígitos 0-9)
+    keras.layers.Dense(10, activation='softmax')
+])
+
+# Visualizar a arquitetura do modelo
+model_cnn.summary()
+
+Passo 3: Compilar e Treinar
+# Compilar o modelo
+model_cnn.compile(
+    optimizer='adam',
+    loss='sparse_categorical_crossentropy',
+    metrics=['accuracy']
+)
+
+# Callbacks para melhor treinamento
+callbacks = [
+    keras.callbacks.EarlyStopping(
+        monitor='val_loss',
+        patience=5,
+        restore_best_weights=True
+    ),
+    keras.callbacks.ReduceLROnPlateau(
+        monitor='val_loss',
+        factor=0.2,
+        patience=3,
+        min_lr=0.0001
+    )
+]
+
+# Treinar o modelo
+history_cnn = model_cnn.fit(
+    x_train_cnn, y_train,
+    batch_size=128,
+    epochs=30,
+    validation_data=(x_test_cnn, y_test),
+    callbacks=callbacks,
+    verbose=1
+)
+
+Passo 4: Avaliar e Analisar
+# Avaliar o modelo no conjunto de teste
+test_loss_cnn, test_accuracy_cnn = model_cnn.evaluate(x_test_cnn, y_test, verbose=0)
+print(f"\n=== RESULTADOS DA CNN ===")
+print(f"Acurácia no conjunto de teste: {test_accuracy_cnn:.4f}")
+print(f"Perda no conjunto de teste: {test_loss_cnn:.4f}")
+
+# Plotar histórico de treinamento
+def plot_training_history(history):
+    plt.figure(figsize=(15, 5))
+    
+    # Gráfico de acurácia
+    plt.subplot(1, 3, 1)
+    plt.plot(history.history['accuracy'], label='Treinamento', linewidth=2)
+    plt.plot(history.history['val_accuracy'], label='Validação', linewidth=2)
+    plt.title('Acurácia do Modelo CNN', fontsize=14)
+    plt.xlabel('Época')
+    plt.ylabel('Acurácia')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    # Gráfico de perda
+    plt.subplot(1, 3, 2)
+    plt.plot(history.history['loss'], label='Treinamento', linewidth=2)
+    plt.plot(history.history['val_loss'], label='Validação', linewidth=2)
+    plt.title('Perda do Modelo CNN', fontsize=14)
+    plt.xlabel('Época')
+    plt.ylabel('Perda')
+    plt.legend()
+    plt.grid(True, alpha=0.3)
+    
+    # Gráfico da taxa de aprendizado
+    if 'lr' in history.history:
+        plt.subplot(1, 3, 3)
+        plt.plot(history.history['lr'], linewidth=2, color='purple')
+        plt.title('Taxa de Aprendizado', fontsize=14)
+        plt.xlabel('Época')
+        plt.ylabel('Learning Rate')
+        plt.grid(True, alpha=0.3)
+    
+    plt.tight_layout()
+    plt.show()
+
+plot_training_history(history_cnn)
+
+# Fazer previsões
+predictions_cnn = model_cnn.predict(x_test_cnn)
+predicted_classes_cnn = np.argmax(predictions_cnn, axis=1)
+
+# Matriz de confusão
+def plot_confusion_matrix_cm(true_labels, predicted_labels, classes):
+    cm = confusion_matrix(true_labels, predicted_labels)
+    
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', 
+                xticklabels=classes, yticklabels=classes)
+    plt.title('Matriz de Confusão - CNN', fontsize=16)
+    plt.xlabel('Predito')
+    plt.ylabel('Verdadeiro')
+    plt.show()
+
+plot_confusion_matrix_cm(y_test, predicted_classes_cnn, range(10))
+
+# Relatório de classificação detalhado
+print("\n=== RELATÓRIO DE CLASSIFICAÇÃO ===")
+print(classification_report(y_test, predicted_classes_cnn))
+
+# Visualizar previsões corretas e incorretas
+def visualize_predictions(images, true_labels, predicted_labels, probabilities, num_examples=10):
+    # Encontrar exemplos corretos e incorretos
+    correct_indices = np.where(true_labels == predicted_labels)[0]
+    incorrect_indices = np.where(true_labels != predicted_labels)[0]
+    
+    print(f"Total de acertos: {len(correct_indices)}/{len(true_labels)}")
+    print(f"Total de erros: {len(incorrect_indices)}/{len(true_labels)}")
+    
+    # Plotar alguns exemplos corretos
+    plt.figure(figsize=(15, 6))
+    plt.suptitle('Exemplos de Previsões Corretas', fontsize=16)
+    
+    for i in range(min(5, len(correct_indices))):
+        idx = correct_indices[i]
+        plt.subplot(2, 5, i + 1)
+        plt.imshow(images[idx].squeeze(), cmap='gray')
+        confidence = probabilities[idx][predicted_labels[idx]]
+        plt.title(f'Verd: {true_labels[idx]}, Pred: {predicted_labels[idx]}\nConf: {confidence:.4f}', 
+                 color='green', fontsize=10)
+        plt.axis('off')
+    
+    # Plotar alguns exemplos incorretos
+    for i in range(min(5, len(incorrect_indices))):
+        idx = incorrect_indices[i]
+        plt.subplot(2, 5, i + 6)
+        plt.imshow(images[idx].squeeze(), cmap='gray')
+        confidence = probabilities[idx][predicted_labels[idx]]
+        plt.title(f'Verd: {true_labels[idx]}, Pred: {predicted_labels[idx]}\nConf: {confidence:.4f}', 
+                 color='red', fontsize=10)
+        plt.axis('off')
+    
+    plt.tight_layout()
+    plt.show()
+
+visualize_predictions(x_test_cnn, y_test, predicted_classes_cnn, predictions_cnn)
+
+
+
+Exercício 3: Análise de Sentimento com RNN (LSTM) (0,20 pontos)
+
+Objetivo: Construir uma Rede Neural Recorrente (LSTM) para classificar o sentimento de avaliações de filmes (positivo/negativo) usando o dataset IMDB.
+
+Passos:
+1. Carregar e Pré-processar os Dados: Carregue o dataset IMDB (reviews de filmes, já pré-processadas em sequências de inteiros). Padronize o comprimento das sequências (padding).
+https://www.kaggle.com/datasets/lakshmi25npathi/imdb-dataset-of-50k-movie-reviews
+
+2. Construir a Rede LSTM: Crie um modelo sequencial. Adicione uma camada de Embedding para representar as palavras como vetores densos. Em seguida, adicione uma camada LSTM e uma camada Dense de saída com ativação sigmoid (para classificação binária).
+
+3. Compilar e Treinar: Compile o modelo com um otimizador e função de perda (binary_crossentropy). Treine o modelo.
+
+4. Avaliar e Testar: Avalie o modelo e tente prever o sentimento de algumas frases de teste que você mesmo criar.
+
+
+
